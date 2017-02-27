@@ -5,6 +5,7 @@ var HttpsProxyAgent = require('https-proxy-agent');
 var request = require('request');
 var Models = require('../Database/dbuser');
 async = require("async");
+var config = require('../config/production.json');
 
 var star = "*";
 
@@ -113,10 +114,10 @@ router.post('/', function(req, res, next) {
         channels.forEach(function(channel){
 
             asyncTasks.push(function(callback){
-
+                console.log(config.production.oAuth.token);
                 request.post({
                     headers: {'content-type' : 'application/json',
-                        'Authorization' : 'Bearer d0a775862557b579d66e5fda6e96992c'},
+                        'Authorization' : config.production.oAuth.token},
                     url:     channel.channel,
                     body:    '{"type":"TEXT", "content":"' + message.replace(/\n/g, " ").replace(/\r/g, " ").replace(/\"/g, " ") +'"}',
                     agent: agent,

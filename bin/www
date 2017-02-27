@@ -7,7 +7,16 @@
 var app = require('../app');
 var debug = require('debug')('techbreakfast:server');
 var http = require('http');
+var fs = require("fs");
 
+
+if (!fs.existsSync('config/production.json'))
+{
+  console.error('Config file [conf / settings.json]missing!');
+  console.error('Did you forge to run `make decrypt_conf` ?');
+  
+  process.exit(1);
+}
 /**
  * Get port from environment and store in Express.
  */
