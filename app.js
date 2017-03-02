@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var socket = require("./websocket/socket");
 
 var users = require('./routes/meta');
 var receive = require('./routes/receive');
@@ -20,6 +21,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+
+
+
+socket.openWebsocketConnection();
+
+
+
+
 
 app.use('/meta', users);
 app.use('/receive', middlewareFunction, receive);
