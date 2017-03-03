@@ -127,7 +127,7 @@ function openWebsocketConnection() {
     });
 
     ws.on('close', function(code) {
-        console.log('Disconnected: ' + code);
+        console.log('Websocket closed: ' + code);
 
         setTimeout(function(){
             openWebsocketConnection() }, 10000);
@@ -135,10 +135,7 @@ function openWebsocketConnection() {
 
     ws.on('error', function(error) {
         console.log('Websocket disconnected -> ' + error.toString());
-        setTimeout(function(){
-            openWebsocketConnection()
-        }, 10000);
-
+        throw error;
     });
 }
 
