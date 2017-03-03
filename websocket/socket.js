@@ -11,7 +11,7 @@ var validUrl = require('valid-url');
 
 
 function openWebsocketConnection() {
-    var HttpsProxyAgent = require('https-proxy-agent');
+
 
     var opts = {
         host: "147.204.6.136",
@@ -21,6 +21,7 @@ function openWebsocketConnection() {
 
     var agent = new HttpsProxyAgent(opts);
 
+    console.log("Trying to connect to relay websocket...")
     var ws = new WebSocket('wss://relay.hana.ondemand.com/websocket',
         {agent: agent,
          headers : {
@@ -58,8 +59,8 @@ function openWebsocketConnection() {
 
                 if (message.content.type == "EVENT" && message.content.attributes.EVENT_TYPE == "KICK" && message.content.attributes.USER_ID == config.production.oAuth.RelayUserID){
                     console.log("Github Bot kicked from Channel");
-                    //delete all chanells
-
+                    //delete every channel with this chat ID  -> search
+                    unregisterByChannel(message.content.channel.id);
                 }
 
                 else if (message.content.type === "TEXT"  && (message.content.attributes.MENTIONS === config.production.oAuth.RelayUserID || message.content.attributes.MENTIONS === config.production.oAuth.oAuthClientID)) {
@@ -82,7 +83,15 @@ function openWebsocketConnection() {
                             if (positionRepo != -1) {
                                 console.log("correct form: " + url.substring(positionRepo));
                                 if (unregisterPosition == -1) {
-                                    registerChannel(message.content.channel.id, url.substring(positionRepo).replace(/\s/g, "").replace(/\n/g, "").replace(/\r/g, ""));
+                                    url = url.substring(positionRepo).replace(/\s/g, "").replace(/\n/g, "").replace(/\r/g, "");
+                                    console.log("Repo : " + url);
+                                    console.log("Slice -1 : " +  url.slice(-1));
+
+                                    if (url.slice(-1) == "/"){
+                                        url = url.slice(0, -1);
+                                    }
+                                    console.log("Fixed repo : " + url);
+                                    registerChannel(message.content.channel.id,url );
                                 }
 
                                 else {
@@ -121,14 +130,14 @@ function openWebsocketConnection() {
         console.log('Disconnected: ' + code);
 
         setTimeout(function(){
-            openWebsocketConnection() }, 3000);
+            openWebsocketConnection() }, 10000);
     });
 
     ws.on('error', function(error) {
-        console.log('Websocket disconnected -> Error: ' + error.toString());
+        console.log('Websocket disconnected -> ' + error.toString());
         setTimeout(function(){
             openWebsocketConnection()
-        }, 3000);
+        }, 10000);
 
     });
 }
@@ -175,7 +184,7 @@ function registerChannel(channelID, GithubRepo) {
         };
 
         console.log("channel saved successfully");
-        sendMessage(channelID,"Awesome! I registered your Github Repository: " + GithubRepo + " | There is only one step missing: Please add this bot as a webhook in Github. I show you how: Go to settings in your repository -> Hooks and Services -> Add Webhook. Now set the Payload URL to: http://10.97.95.217:3000/receive  - Content type to: application/json.  You can also configure which Github events should be sent to you. By the way: Just remove me from this channel if you no longer like to receive messages. Thats it! Enjoy :)" );
+        sendMessage(channelID,"Awesome! I registered your Github Repository: " + GithubRepo + " | There is only one step missing: Please add this bot as a webhook in Github. I show you how: Go to settings in your repository -> Hooks and Services -> Add Webhook. Now set the Payload URL to: http://10.97.95.217:3000/receive  - Content type: application/json. Please leave the secret field empty. You can also configure which Github events should be sent to you. By the way: Just remove me from this channel if you no longer like to receive messages. Thats it! Enjoy :)" );
     })
  }
 
@@ -193,6 +202,25 @@ function unregisterChannel(channelID, GithubRepo) {
 
         else {
             sendMessage(channelID,"I could not find your Github repository. Did you already register it?");
+        }
+    });
+
+}
+
+function unregisterByChannel(channelID) {
+    Models.Channel.find({'channel': 'https://relay.hana.ondemand.com/api/v2/channels/'.concat(channelID).concat('/messages')},function(err, channels) {
+        console.log(channels.length);
+
+        async.each(channels, function(dataItem, callback) {
+            dataItem.remove();
+        });
+
+        if (channels.length != 0){
+            console.log("Unregistered " + channels.length + " channels after Bot got kicked from channel " + channelID)
+        }
+
+        else {
+            console.log("Could not unregister channel" + channelID + " after kick ");
         }
     });
 
