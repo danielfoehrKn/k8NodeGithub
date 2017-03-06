@@ -14,12 +14,19 @@ function detectEventType(req, res, next) {
         console.log("Project Card event")
     }
     else if (req.headers['x-github-event'] == 'issue_comment') {
-        req.body.eventType = "issueComment"
-        console.log("IssueComent event")
+        if (req.body.action == 'created' || req.body.action == 'deleted' ) {
+            req.body.eventType = "issueComment"
+        }
+        else {req.body.eventType = "noSupport"}
+
+        console.log("IssueComment event")
     }
     else if (req.headers['x-github-event'] == 'issues') {
-        req.body.eventType = "issue"
-        console.log("Issue event")
+        if (req.body.action == 'closed' || req.body.action == 'opened' || req.body.action == 'reopened' ) {
+                req.body.eventType = "issue"
+        }
+        else {req.body.eventType = "noSupport"}
+                console.log("Issue event")
     }
 
     else if (req.headers['x-github-event'] == 'create' || req.headers['x-github-event'] == 'delete'){
@@ -27,17 +34,23 @@ function detectEventType(req, res, next) {
         console.log("createDelete")
     }
     else if (req.headers['x-github-event'] == 'commit_comment'){
+        if (req.body.action == 'created' || req.body.action == 'deleted' ) {
         req.body.eventType = "commitComment";
+        }
+        else {req.body.eventType = "noSupport"}
         console.log("commit Comment")
     }
 
     else if (req.headers['x-github-event'] == 'pull_request_review'){
         req.body.eventType = "pullRequestReview";
-        console.log("commit Comment")
+        console.log("pull_request_review")
     }
 
     else if (req.headers['x-github-event'] == 'pull_request_review_comment'){
-        req.body.eventType = "pullRequestReviewComment";
+        if (req.body.action == 'created' || req.body.action == 'deleted' ) {
+            req.body.eventType = "pullRequestReviewComment";
+        }
+        else {req.body.eventType = "noSupport"}
         console.log("pull_request_review_comment")
     }
 
