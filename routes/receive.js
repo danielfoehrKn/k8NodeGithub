@@ -26,28 +26,28 @@ router.post('/', function(req, res, next) {
                 var message = "[ " + jsonData.sender.login.concat(" pushed ").concat(jsonData.commits.length).concat(" commit(s)").concat("  to repository ").concat(star).concat(jsonData.repository.full_name).concat(star);
 
 
-                // for (var i = 0; i < jsonData.commits.length; i++) {
-                //     message = message.concat("| Commit Number : ").concat(i + 1).concat(" by ").concat(jsonData.commits[i].committer.name).concat(" | URL :" + jsonData.commits[i].url).concat(". | Commit Message: ").concat(star).concat(jsonData.commits[i].message).concat(star).concat(" | Files modified : ");
-                //     if (jsonData.commits[i].modified.length != 0) {
-                //         for (var x = 0; x < jsonData.commits[i].modified.length; x++) {
-                //             message = message.concat(star).concat(jsonData.commits[i].modified[x]).concat(star).concat(" ");
-                //         }
-                //     }
-                //
-                //     if (jsonData.commits[i].added.length != 0){
-                //         message = message.concat( " | Files added : ")
-                //         for (var y = 0; y < jsonData.commits[i].added.length; y++) {
-                //             message = message.concat(star).concat(jsonData.commits[i].added[y]).concat(star).concat(" ");
-                //         }
-                //     }
-                //
-                //     if (jsonData.commits[i].removed.length != 0) {
-                //         message = message.concat(" | Files removed : ")
-                //         for (var z = 0; z < jsonData.commits[i].removed.length; z++) {
-                //             message = message.concat(star).concat(jsonData.commits[i].removed[z]).concat(star).concat(" ");
-                //         }
-                //     }
-                // }
+                for (var i = 0; i < jsonData.commits.length; i++) {
+                    message = message.concat("| Commit Number : ").concat(i + 1).concat(" by ").concat(jsonData.commits[i].committer.name).concat(" | URL :" + jsonData.commits[i].url).concat(". | Commit Message: ").concat(star).concat(jsonData.commits[i].message).concat(star);
+                    // if (jsonData.commits[i].modified.length != 0) {
+                    //     for (var x = 0; x < jsonData.commits[i].modified.length; x++) {
+                    //         message = message.concat(star).concat(jsonData.commits[i].modified[x]).concat(star).concat(" ");
+                    //     }
+                    // }
+                    //
+                    // if (jsonData.commits[i].added.length != 0){
+                    //     message = message.concat( " | Files added : ")
+                    //     for (var y = 0; y < jsonData.commits[i].added.length; y++) {
+                    //         message = message.concat(star).concat(jsonData.commits[i].added[y]).concat(star).concat(" ");
+                    //     }
+                    // }
+                    //
+                    // if (jsonData.commits[i].removed.length != 0) {
+                    //     message = message.concat(" | Files removed : ")
+                    //     for (var z = 0; z < jsonData.commits[i].removed.length; z++) {
+                    //         message = message.concat(star).concat(jsonData.commits[i].removed[z]).concat(star).concat(" ");
+                    //     }
+                    // }
+                }
                 message = message + " ]";
 
                 break;
@@ -59,7 +59,7 @@ router.post('/', function(req, res, next) {
                 } else {
                     message = message.concat(star).concat(jsonData.action).concat(star);
                 };
-                 message = message.concat(" | Repository: " + jsonData.repository.full_name).concat(" | User: " + jsonData.sender.login).concat(" | Titel : " + jsonData.pull_request.title).concat(" | URL: ").concat(jsonData.pull_request.html_url).concat(" ]");
+                 message = message.concat(" | Repository: " + jsonData.repository.full_name).concat(" | User: " + jsonData.sender.login).concat(" | Title : " + jsonData.pull_request.title).concat(" | URL: ").concat(jsonData.pull_request.html_url).concat(" ]");
 
                 break;
             case 'project_card':
@@ -68,7 +68,7 @@ router.post('/', function(req, res, next) {
                 break;
 
             case 'issue':
-                var message = "[ Issue ".concat(star).concat(jsonData.action).concat(star).concat(" | Titel : " + jsonData.issue.title).concat(" | Repository: " + jsonData.repository.full_name).concat(" | User: " + jsonData.sender.login).concat(" | URL: ").concat(jsonData.issue.html_url).concat(" ]");
+                var message = "[ Issue ".concat(star).concat(jsonData.action).concat(star).concat(" | Title : " + jsonData.issue.title).concat(" | Repository: " + jsonData.repository.full_name).concat(" | User: " + jsonData.sender.login).concat(" | URL: ").concat(jsonData.issue.html_url).concat(" ]");
 
                 break;
 
