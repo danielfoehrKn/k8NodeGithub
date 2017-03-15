@@ -2,8 +2,13 @@ function detectEventType(req, res, next) {
     //not necessary but gives ability to join certain event types if needed & independent of business logic
 
     if (req.headers['x-github-event'] == 'push'){
-        req.body.eventType = "push"
-        console.log("Push event")
+        if (req.body.commits.length != 0){
+            req.body.eventType = "push"
+            console.log("Push event")
+        }
+        else {
+            console.log("Zero commits")
+        }
     }
     else if (req.headers['x-github-event'] == 'pull_request') {
         req.body.eventType = "pull"
