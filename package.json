@@ -8,7 +8,6 @@
     "decrypt": "decrypt config/production.json.cast5 config/production.json"
   },
   "dependencies": {
-    "async": "^2.1.4",
     "body-parser": "~1.15.2",
     "config-leaf": "^0.3.0",
     "cookie-parser": "~1.4.3",
@@ -19,9 +18,9 @@
     "https-proxy-agent": "^1.0.0",
     "mongoose": "^4.7.7",
     "morgan": "~1.7.0",
+    "node-fetch": "^2.1.2",
     "request": "^2.79.0",
     "serve-favicon": "~2.3.0",
-    "valid-url": "^1.0.9",
-    "ws": "^2.2.0"
+    "valid-url": "^1.0.9"
   }
 }

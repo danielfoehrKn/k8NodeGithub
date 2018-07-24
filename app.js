@@ -4,11 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var socket = require("./websocket/socket");
 
-var users = require('./routes/meta');
+var index = require('./routes/index');
 var receive = require('./routes/receive');
 var middlewareFunction = require('./Middlewares/eventType')
+
 
 var app = express();
 
@@ -22,35 +22,29 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// <dnsName<:8080/github/receive   -> ingress controller forwards all traffic to /github -> however /github is still included in url
+// needs leading "/"
+app.use('/github', index);
+app.use('/github/receive', middlewareFunction, receive);
 
 
-
-
-socket.openWebsocketConnection();
-
-
-
-
-
-app.use('/meta', users);
-app.use('/receive', middlewareFunction, receive);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
+app.use(function (req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
 });
 
 // error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 module.exports = app;
